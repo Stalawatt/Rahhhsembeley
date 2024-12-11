@@ -1,10 +1,13 @@
-import argparse
-import Interpreter
+import argparse,sys
+from .Interpreter import begin_program
 
-if __name__ == "__main__":
-    argsParser = argparse.ArgumentParser(description="An interpreter for XXX language.")
-    argsParser.add_argument("file", required=True, help="Filename of the input file to interpret")
-    file = argsParser.parse_args()
 
-    
+def cli():
+    #argsParser = argparse.ArgumentParser(description="An interpreter for XXX language.")
+    #argsParser.add_argument("File", type=argparse.FileType('r'), default=sys.stdin, help="Filename of the input file to interpret")
+    #args = argsParser.parse_args()
+    with open("program.txt") as File:
+        begin_program(File)
+
+
 
