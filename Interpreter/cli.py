@@ -3,11 +3,10 @@ from .Interpreter import begin_program
 
 
 def cli():
-    #argsParser = argparse.ArgumentParser(description="An interpreter for XXX language.")
-    #argsParser.add_argument("File", type=argparse.FileType('r'), default=sys.stdin, help="Filename of the input file to interpret")
-    #args = argsParser.parse_args()
-    with open("program.txt") as File:
-        begin_program(File)
+    argsParser = argparse.ArgumentParser(description="An interpreter for XXX language.")
+    argsParser.add_argument("File", type=argparse.FileType('r'), default=sys.stdin, help="Filename of the input file to interpret")
+    args = argsParser.parse_args()
+    begin_program(args.File)
 
 
 

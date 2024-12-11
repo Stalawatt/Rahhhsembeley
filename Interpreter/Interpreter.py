@@ -17,23 +17,20 @@ class DATAMEMORY :
 
     def get_value(self, index:int):
         self.__val_index(index)
-        return self.__MEMORYARRAY[index][0]
+        return self.__MEMORYARRAY[index]
     
-    def get_type(self, index:int):
-        self.__val_index(index)
-        return self.__MEMORYARRAY[index][1]
+    
     
     def set_value(self, index:int, value:int|str|float):
         self.__val_index(index)
-        if type(value) != self.__MEMORYARRAY[index][1]: # static types 
-            raise TypeError("Cannot change datatype")
+
         
-        self.__MEMORYARRAY[index][0] = value
+        self.__MEMORYARRAY[index] = value
         return
     
-    def declare(self, index:int, value:int|str|float, typeis:type):
+    def declare(self, index:int, value:int|str|float):
         self.__val_index(index)
-        self.__MEMORYARRAY[index] = [typeis(value),type(typeis)]
+        self.__MEMORYARRAY[index] = value
         return
     
     def __val_index(self, index:int):
@@ -70,8 +67,15 @@ class Instr:
     def ALLOCATE(self,length:int):
         self.data = DATAMEMORY(length)
 
-    def DECLARE(self,index:int,value:str, typeis:type):
-        self.data.declare(int(index),self.types[typeis](value),type(typeis))
+    def DECLARE(self,index:int,value:str):
+        if value.isdigit():
+            inferred_value = int(value)
+        else:
+            try:
+                inferred_value = float(value)
+            except ValueError:
+                inferred_value = value
+        self.data.declare(int(index),inferred_value)
 
     def LOAD_INDEX(self,index:int):
         self.register = self.data.get_value(int(index))
@@ -101,7 +105,7 @@ class Instr:
         pattern = r"&(\d+)"
         def replace_memory(match):
             variable = int(match.group(1))
-            return self.data.get_value(variable)
+            return str(self.data.get_value(variable))
         if eval(re.sub(pattern,replace_memory,condition)):
             interpreter.currentline = int(index)-2
 
@@ -125,7 +129,7 @@ class Parser:
                 case "ALLOCATE":
                     self.instructions.ALLOCATE(line[1])
                 case "DECLARE":
-                    self.instructions.DECLARE(line[1],line[2],line[3])
+                    self.instructions.DECLARE(line[1],line[2])
                 case "LOAD":
                     if "&" in line[1]:
                         self.instructions.LOAD_INDEX(line[1].lstrip("&"))
