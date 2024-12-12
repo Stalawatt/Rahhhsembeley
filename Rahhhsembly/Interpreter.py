@@ -129,6 +129,9 @@ class Parser:
                 case "ALLOCATE":
                     self.instructions.ALLOCATE(line[1])
                 case "DECLARE":
+                    if "&" in line[1]:
+                        line[1] = line[1].lstrip("&")
+                        
                     self.instructions.DECLARE(line[1],line[2])
                 case "LOAD":
                     if "&" in line[1]:
