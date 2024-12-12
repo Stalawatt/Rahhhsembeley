@@ -43,7 +43,7 @@ class Instr:
         Container class for all the instructions needed for the program :
 
         ALLOCATE [int]                               Specify the length of and initialise the data array
-        DECLARE [index] [index or value]                      Initialise a variable at index, with value
+        DECLARE [index] [index or value]             Initialise a variable at index, with value
         LOAD [index or value]                        Load data from index (or value) into register
         STORE [index]                                Store data from register into index
         HALT                                         End the program
@@ -53,12 +53,13 @@ class Instr:
         SUB [index or value]                         Subtract value from index (or direct value) to register
         PRINT                                        Print value in register to console
 
+        Use & before an index to specify memory access
+
         These 10 instructions make a turing complete machine
         """
 
         self.data: DATAMEMORY = None
         self.register: int | str | float = None
-        self.types = {"int": int, "str": str, "float": float}
 
     def HALT(self):
         sys.exit(0)
@@ -102,13 +103,21 @@ class Instr:
         self.register -= value
 
     def JUMPIF(self, index: int, condition: str):
+        # Match the pattern for memory access (&0, &1, etc.)
         pattern = r"&(\d+)"
 
         def replace_memory(match):
+            # Extract the memory index (e.g., 0, 1)
             variable = int(match.group(1))
+            # Replace with the actual value
             return str(self.data.get_value(variable))
-        if eval(re.sub(pattern, replace_memory, condition)):
-            interpreter.currentline = int(index)-2
+
+        # Replace all memory references in the condition (like &0) with actual values
+        condition = re.sub(pattern, replace_memory, condition)
+        # Now evaluate the condition
+        if eval(condition):  # This evaluates the condition as a Python expression
+            # Jump to the specified line (adjusted for 0-indexing)
+            interpreter.currentline = int(index) - 2
 
 
 class Parser:
@@ -145,7 +154,7 @@ class Parser:
                 case "STORE":
                     if "&" in line[1]:
                         line[1] = line[1].lstrip("&")
-                    self.instructions.STORE(line[1])
+                        self.instructions.STORE(line[1])
                 case "ADD":
                     if "&" in line[1]:
                         self.instructions.ADD_INDEX(line[1].lstrip("&"))
@@ -153,14 +162,14 @@ class Parser:
                         self.instructions.ADD_VALUE(line[1])
                 case "SUB":
                     if "&" in line[1]:
-                        self.instructions.SUB_INDEX(line[1].lstrip("&"))
+                        self.instructions.SUB_INDEX(int(line[1].lstrip("&")))
                     else:
-                        self.instructions.SUB_VALUE(line[1])
+                        self.instructions.SUB_VALUE(int(line[1]))
                 case "JUMP":
                     interpreter.currentline = int(line[1])-2
 
                 case "JUMPIF":
-                    self.instructions.JUMPIF(line[1], "".join(line[1:]))
+                    self.instructions.JUMPIF(line[1], " ".join(line[2:]))
 
         else:
             match line:
