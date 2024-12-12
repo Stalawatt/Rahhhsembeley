@@ -11,7 +11,6 @@ class DATAMEMORY:
         Methods :
         .get_value(index) : returns value at the given index
         .get_type(index) : returns type at the given index
-        .set_value(index, value) : if value is of correct type, sets the value at index given to value given
 
         """
         self.length: int = int(length)  # this is the length of the array
@@ -44,7 +43,7 @@ class Instr:
         Container class for all the instructions needed for the program :
 
         ALLOCATE [int]                               Specify the length of and initialise the data array
-        DECLARE [index] [value]                      Initialise a variable at index, with value
+        DECLARE [index] [index or value]                      Initialise a variable at index, with value
         LOAD [index or value]                        Load data from index (or value) into register
         STORE [index]                                Store data from register into index
         HALT                                         End the program
