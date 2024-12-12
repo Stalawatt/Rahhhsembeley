@@ -44,7 +44,7 @@ class Instr:
         Container class for all the instructions needed for the program :
 
         ALLOCATE [int]                               Specify the length of and initialise the data array
-        DECLARE [index] [value] [type]               Initialise a variable at index, of type, with value
+        DECLARE [index] [value]                      Initialise a variable at index, with value
         LOAD [index or value]                        Load data from index (or value) into register
         STORE [index]                                Store data from register into index
         HALT                                         End the program
